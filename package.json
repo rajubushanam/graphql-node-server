@@ -19,6 +19,8 @@
   "homepage": "https://github.com/rajubushanam/graphql-node-server#readme",
   "dependencies": {
     "apollo-server": "^2.22.1",
+    "apollo-server-express": "^2.22.2",
+    "dot-env": "0.0.1",
     "express": "^4.17.1",
     "express-graphql": "^0.12.0",
     "graphql": "^15.5.0",
