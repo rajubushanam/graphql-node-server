@@ -1,38 +1,23 @@
-const {ApolloServer} = require('apollo-server')
+const {ApolloServer, gql} = require('apollo-server-express')
+const express = require('express')
+const types = require('./types')
+const resolvers = require('./resolvers')
+const MovieAPI = require('./datasources/MovieAPI')
+const app = express()
+const PORT = 3005
 
-const typeDefs = `
-type Query {
-  info: String!
-  feed: [Link!]!
-}
-type Link {
-  id: ID!
-  description: String!
-  url: String!
-}
-`
+const typeDefs = gql`${types}`
 
-let links = [{
-  id: 'link-0',
-  url: 'www.rapterr.com',
-  description: 'I am a Fullstack dev'
-}]
-
-const resolvers = {
-  Query: {
-    info: () => 'This is the API of test apollo server',
-    feed: () => links
-  },
-  Link: {
-    id: parent => parent.id,
-    description: parent => parent.description,
-    url: parent => parent.url
-  }
-}
+console.log("typedefs", types);
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
+  dataSources: () => ({
+    movieByYearAPI: new MovieAPI()
+  })
 })
 
-server.listen().then(({url}) => console.log(`Server is running on ${url}`))
+server.applyMiddleware({app, path: '/graphql'})
+
+app.listen(PORT, () => console.log(`Server is running on ${PORT}`))
